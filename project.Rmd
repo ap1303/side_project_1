@@ -2,9 +2,7 @@
 title: "Olympic Dataset"
 author: "Peizhi Zhang"
 date: "August 25th, 2018"
-output: 
-   html_document:
-    keep_md: true
+output: github_document
 ---
 
 
