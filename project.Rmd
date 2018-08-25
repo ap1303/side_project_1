@@ -1,3 +1,11 @@
+---
+title: "Olympic Dataset"
+author: "Peizhi Zhang"
+date: "August 25th, 2018"
+output: rmarkdown::github_document
+---
+
+
 ## Olympic Dataset
 
 These days, with the Asian Olympics coming in hot, I thought that I might do an analysis on all the past Olympic Games and predict what kind of candidate had the better chance of scoring a gold medal for a particular kind of game. 
