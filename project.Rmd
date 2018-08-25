@@ -1,0 +1,326 @@
+## Olympic Dataset
+
+These days, with the Asian Olympics coming in hot, I thought that I might do an analysis on all the past Olympic Games and predict what kind of candidate had the better chance of scoring a gold medal for a particular kind of game. 
+
+The first step in doing such analysis is to obtain data. Luckily, Kaggle has already provided one for me so a token of thanks to the kaggler that amassed the dataset in the first place!
+
+```{r echo=FALSE, warning = FALSE, message = FALSE, Load_Dataset}
+df <- read.csv("dataset.csv")
+```
+
+```{r echo=FALSE, warning = FALSE, message = FALSE, Load_Library}
+library("ggplot2")
+library("dplyr")
+```
+
+## Analysis 
+
+First, let's display the list of games included in the dataset in order of descending athlete count. 
+
+```{r echo=FALSE, warning = FALSE, message = FALSE, list_of_sports}
+by.sport <- group_by(df, Sport) 
+sport.count <- summarize(by.sport, count=n())
+sport.count <- arrange(sport.count, desc(count))
+levels(sport.count$Sport)
+```
+
+Now since the list is too long, I only pick the games that are interesting to me to analyze, which are: shooting, table tennis, swimming, Badminton, Gymnastics.
+
+### Shooting
+
+```{r echo=FALSE, warning = FALSE, message = FALSE, list_of_events_for_shooting}
+shooting.events <- filter(df, Sport == 'Shooting')
+events <- group_by(shooting.events, Event)
+events <- summarise(events, count=n())
+events <- arrange(events, desc(count))
+events$Event
+```
+
+Seeing as the list is too long, I only take on several representative to analyze. 
+
+#### Shooting Men's Free Pistol, 50 metres
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, shooting_event_1_stature}
+event <- filter(df, Event == "Shooting Men's Free Pistol, 50 metres")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Medal)
+event <- summarize(event, average_age=mean(Age, na.rm = TRUE), average_height=mean(Height, na.rm = TRUE), average_weight=mean(Weight, na.rm = TRUE))
+event
+```
+
+As the data shows, in terms of body stature, the data is pretty random as there is no significant evidence in favor of a specific combination. I'd say the typical medal-scorer is around 30 to 35 years old, of height about 175, and of weight around 80kg. 
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, shooting_event_1_team}
+event <- filter(df, Event == "Shooting Men's Free Pistol, 50 metres")
+event <- filter(event, Medal != "NA")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Team, Medal)
+event <- summarize(event, count=n())
+ggplot(event, aes(x=Team, y=Medal)) +
+  geom_point(aes(size=count)) +
+  coord_flip()
+```
+
+As per the graph shows, the best countries in this event are United States, South Korea, Finland, China, France, Sweden. 
+
+__So the conclusion is that the best performers of this game are from the U.S, South Korea and are of around 30 to 35 years old, height about 175, weight around 80kg.__
+
+#### Shooting Men's Air Rifle, 10 metres
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, shooting_event_2_stature}
+event <- filter(df, Event == "Shooting Men's Air Rifle, 10 metres")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Medal)
+event <- summarize(event, average_age=mean(Age, na.rm = TRUE), average_height=mean(Height, na.rm = TRUE), average_weight=mean(Weight, na.rm = TRUE))
+event
+```
+
+Now the data shows a clear leaning towards men of age 25, of height 175, of weight 70 for a typical gold medal scorer. 
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, shooting_event_2_team}
+event <- filter(df, Event == "Shooting Men's Air Rifle, 10 metres")
+event <- filter(event, Medal != "NA")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Team, Medal)
+event <- summarize(event, count=n())
+ggplot(event, aes(x=Team, y=Medal)) +
+  geom_point(aes(size=count)) +
+  coord_flip()
+```
+
+As the data shows, the best performing countries in this game are mostly from China, France, and Russia. 
+
+__So the conclusion was that the best athletes in this game are from China, France, and Russia and of of age 25, of height 175, of weight 70.
+
+### Table Tennis
+
+```{r echo=FALSE, warning = FALSE, message = FALSE, list_of_events_for_tt}
+shooting.events <- filter(df, Sport == 'Table Tennis')
+events <- group_by(shooting.events, Event)
+events <- summarise(events, count=n())
+events <- arrange(events, desc(count))
+events
+```
+
+Since it's impossible for me to investigate all of them, I'll just dig into the singles games since they are in most of the times an indicator of success of Doubles and Team games.
+
+#### Table Tennis Men's Singles
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, tt_event_1_stature}
+event <- filter(df, Event == "Table Tennis Men's Singles")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Medal)
+event <- summarize(event, average_age=mean(Age, na.rm = TRUE), average_height=mean(Height, na.rm = TRUE), average_weight=mean(Weight, na.rm = TRUE))
+event
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, tt_event_1_team}
+event <- filter(df, Event == "Table Tennis Men's Singles")
+event <- filter(event, Medal != "NA")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Team, Medal)
+event <- summarize(event, count=n())
+ggplot(event, aes(x=Team, y=Medal)) +
+  geom_point(aes(size=count)) +
+  coord_flip()
+```
+
+__Aha, the obvious winners here are China, and South Korea. And the typical stature for a gold medaller is: age below 25, height around 175, weight below 70.__
+
+#### Table Tennis Women's Singles
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, tt_event_2_stature}
+event <- filter(df, Event == "Table Tennis Men's Singles")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Medal)
+event <- summarize(event, average_age=mean(Age, na.rm = TRUE), average_height=mean(Height, na.rm = TRUE), average_weight=mean(Weight, na.rm = TRUE))
+event
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, tt_event_2_team}
+event <- filter(df, Event == "Table Tennis Men's Singles")
+event <- filter(event, Medal != "NA")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Team, Medal)
+event <- summarize(event, count=n())
+ggplot(event, aes(x=Team, y=Medal)) +
+  geom_point(aes(size=count)) +
+  coord_flip()
+```
+
+__The best performers of this game are men from China, South Korea, and Sweden and of height 175, age 23, weight 70.__
+
+### Swimming
+
+```{r echo=FALSE, warning = FALSE, message = FALSE, list_of_events_for_swim}
+shooting.events <- filter(df, Sport == 'Swimming')
+events <- group_by(shooting.events, Event)
+events <- summarise(events, count=n())
+events <- arrange(events, desc(count))
+events
+```
+
+Since the list is unreasonably long, I'll pick several representatives to investigate.
+
+#### Swimming Men's 4 x 100 metres Medley Relay
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, swim_event_1_stature}
+event <- filter(df, Event == "Swimming Men's 4 x 100 metres Medley Relay")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Medal)
+event <- summarize(event, average_age=mean(Age, na.rm = TRUE), average_height=mean(Height, na.rm = TRUE), average_weight=mean(Weight, na.rm = TRUE))
+event
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, swim_event_1_team}
+event <- filter(df, Event == "Swimming Men's 4 x 100 metres Medley Relay")
+event <- filter(event, Medal != "NA")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Team, Medal)
+event <- summarize(event, count=n())
+ggplot(event, aes(x=Team, y=Medal)) +
+  geom_point(aes(size=count)) +
+  coord_flip()
+```
+
+__Now as the data demonstrates, the top swimmers are mostly from Australia and the U.S. And the data shows a clear trend towards men of age around 22, of height 188, and of weight around 83.__
+
+#### Swimming Women's 4 x 100 metres Medley Relay
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, swim_event_2_stature}
+event <- filter(df, Event == "Swimming Women's 4 x 100 metres Medley Relay")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Medal)
+event <- summarize(event, average_age=mean(Age, na.rm = TRUE), average_height=mean(Height, na.rm = TRUE), average_weight=mean(Weight, na.rm = TRUE))
+event
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, swim_event_2_team}
+event <- filter(df, Event == "Swimming Women's 4 x 100 metres Medley Relay")
+event <- filter(event, Medal != "NA")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Team, Medal)
+event <- summarize(event, count=n())
+ggplot(event, aes(x=Team, y=Medal)) +
+  geom_point(aes(size=count)) +
+  coord_flip()
+```
+
+__This game fares the best for women of age around 20, of height around 175, of weight around 63 and from Australia, Germany, and the United States.__
+
+### Badminton
+
+```{r echo=FALSE, warning = FALSE, message = FALSE, list_of_events_for_badminton}
+shooting.events <- filter(df, Sport == 'Badminton')
+events <- group_by(shooting.events, Event)
+events <- summarise(events, count=n())
+events <- arrange(events, desc(count))
+events
+```
+
+Same as previously, this time I'll also investigate the singles games. 
+
+#### Badminton Women's Singles
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, bad_event_1_stature}
+event <- filter(df, Event == "Badminton Women's Singles")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Medal)
+event <- summarize(event, average_age=mean(Age, na.rm = TRUE), average_height=mean(Height, na.rm = TRUE), average_weight=mean(Weight, na.rm = TRUE))
+event
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, bad_event_1_team}
+event <- filter(df, Event == "Badminton Women's Singles")
+event <- filter(event, Medal != "NA")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Team, Medal)
+event <- summarize(event, count=n())
+ggplot(event, aes(x=Team, y=Medal)) +
+  geom_point(aes(size=count)) +
+  coord_flip()
+```
+
+__The top female players are from China and Indonesia and of age 25, height 170, weight 62. 
+#### Badminton Men's Singles
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, bad_event_2_stature}
+event <- filter(df, Event == "Badminton Men's Singles")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Medal)
+event <- summarize(event, average_age=mean(Age, na.rm = TRUE), average_height=mean(Height, na.rm = TRUE), average_weight=mean(Weight, na.rm = TRUE))
+event
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, bad_event_2_team}
+event <- filter(df, Event == "Badminton Men's Singles")
+event <- filter(event, Medal != "NA")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Team, Medal)
+event <- summarize(event, count=n())
+ggplot(event, aes(x=Team, y=Medal)) +
+  geom_point(aes(size=count)) +
+  coord_flip()
+```
+
+__Now it seems that the best players are from China, Indonesia, Denmark, and Malaysia. The typical medal scorers are of age around 25, height around 175, weight around 70.__
+
+### Gymnastics
+
+```{r echo=FALSE, warning = FALSE, message = FALSE, list_of_events_for_gymnastics}
+shooting.events <- filter(df, Sport == 'Gymnastics')
+events <- group_by(shooting.events, Event)
+events <- summarise(events, count=n())
+events <- arrange(events, desc(count))
+events
+```
+
+Apparently, I'll only pick representatives to investigate
+
+#### Gymnastics Men's Individual All-Around
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, gym_event_1_stature}
+event <- filter(df, Event == "Gymnastics Men's Individual All-Around")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Medal)
+event <- summarize(event, average_age=mean(Age, na.rm = TRUE), average_height=mean(Height, na.rm = TRUE), average_weight=mean(Weight, na.rm = TRUE))
+event
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, gym_event_1_team}
+event <- filter(df, Event == "Gymnastics Men's Individual All-Around")
+event <- filter(event, Medal != "NA")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Team, Medal)
+event <- summarize(event, count=n())
+ggplot(event, aes(x=Team, y=Medal)) +
+  geom_point(aes(size=count)) +
+  coord_flip()
+```
+
+__The top players are from China, France, Japan, Italy, USSR (a.k.a Russia nowadays). The typical medal scorer is of age around 25, height 165, weight 60.__
+
+#### Gymnastics Women's Individual All-Around
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, gym_event_2_stature}
+event <- filter(df, Event == "Gymnastics Women's Individual All-Around")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Medal)
+event <- summarize(event, average_age=mean(Age, na.rm = TRUE), average_height=mean(Height, na.rm = TRUE), average_weight=mean(Weight, na.rm = TRUE))
+event
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, gym_event_2_team}
+event <- filter(df, Event == "Gymnastics Women's Individual All-Around")
+event <- filter(event, Medal != "NA")
+event <- select(event, ID, Name, Age, Height, Weight, Team, Medal)
+event <- group_by(event, Team, Medal)
+event <- summarize(event, count=n())
+ggplot(event, aes(x=Team, y=Medal)) +
+  geom_point(aes(size=count)) +
+  coord_flip()
+```
+
+__The top players are from Czechoslovakia, Romania, Soviet Union, and the United States. The typical medal scores are of age 20, height 155, weight 47.__ 
+
+
